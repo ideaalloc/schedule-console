@@ -49,4 +49,9 @@ public class JobService {
                 .build();
         return ImmutableMap.of(job, trigger);
     }
+
+    @Transactional
+    public Long addJob(final String name, final String cron, final String command) {
+        return scheduleRepository.insertSchedule(name, cron, command, true);
+    }
 }
