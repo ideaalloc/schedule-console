@@ -6,14 +6,12 @@ import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +26,6 @@ import java.util.Map;
  * @since 2015-10-17
  */
 @SpringBootApplication
-@EnableScheduling
 public class Application {
     static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
@@ -37,11 +34,9 @@ public class Application {
     }
 
     @Bean
-    CommandLineRunner init(final JobService jobService) {
+    CommandLineRunner init(final Scheduler scheduler, final JobService jobService) {
 
         return arg -> {
-            final Scheduler scheduler = new StdSchedulerFactory().getScheduler();
-            scheduler.start();
             final List<Schedules> schedules = jobService.getAllEnabled();
             schedules.forEach(schedule -> {
                 final Map<JobDetail, Trigger> jobDetailTriggerMap = jobService.scheduleJob(schedule);
